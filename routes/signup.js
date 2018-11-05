@@ -20,9 +20,13 @@ router.post('/', checkNotLogin, function (req, res, next) {
   const avatar = req.files.avatar.path.split(path.sep).pop()
   let password = req.fields.password
   const repassword = req.fields.repassword
+  const email = req.fields.email
 
   // 校验参数
   try {
+    if (!(email.length >= 1 && email.length <= 50)) {
+      throw new Error('请输入正确的邮箱')
+    }
     if (!(name.length >= 1 && name.length <= 10)) {
       throw new Error('名字请限制在 1-10 个字符')
     }
@@ -57,7 +61,8 @@ router.post('/', checkNotLogin, function (req, res, next) {
     password: password,
     gender: gender,
     bio: bio,
-    avatar: avatar
+    avatar: avatar,
+    email: email
   }
   // 用户信息写入数据库
   UserModel.create(user)

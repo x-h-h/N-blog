@@ -12,13 +12,13 @@ router.get('/', checkNotLogin, function (req, res, next) {
 
 // POST /signin 用户登录
 router.post('/', checkNotLogin, function (req, res, next) {
-  const name = req.fields.name
+  const email = req.fields.email
   const password = req.fields.password
 
   // 校验参数
   try {
-    if (!name.length) {
-      throw new Error('请填写用户名')
+    if (!email.length) {
+      throw new Error('请填写邮箱')
     }
     if (!password.length) {
       throw new Error('请填写密码')
@@ -28,7 +28,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
     return res.redirect('back')
   }
 
-  UserModel.getUserByName(name)
+  UserModel.getUserByName(email)
     .then(function (user) {
       if (!user) {
         req.flash('error', '用户不存在')

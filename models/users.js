@@ -7,9 +7,9 @@ module.exports = {
   },
 
   // 通过用户名获取用户信息
-  getUserByName: function getUserByName (name) {
+  getUserByName: function getUserByName (email) {
     return User
-      .findOne({ name: name })
+      .findOne({ email: email })
       .addCreatedAt()
       .exec()
   }
