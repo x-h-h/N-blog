@@ -1,0 +1,29 @@
+<%- include('header') %>
+
+<div class="ui grid">
+    <div class="four wide column"></div>
+    <div class="eight wide column">
+        <form class="ui form segment" method="post">
+            <div class="field required">
+                <label>邮箱</label>
+                <input placeholder="邮箱" type="text" name="email">
+            </div>
+            <div class="field required">
+                <label>验证码</label>
+                <input placeholder="验证码" type="text" name="verify">
+            </div>
+            <div class="field required">
+                <label>新密码</label>
+                <input placeholder="新密码" type="password" name="password">
+            </div>
+            <div class="field required">
+                <label>重复新密码</label>
+                <input placeholder="重复新密码" type="password" name="repassword">
+            </div>
+            <input type="submit" class="ui button fluid" value="找回密码">
+               
+        </form>  
+    </div>
+</div>
+
+<%- include('footer') %>
