@@ -5,14 +5,14 @@ const crypto = require('crypto')
 const UserModel = require('../models/users')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
-router.get('/', checkNotLogin, function (req, res, next) {
-  res.render('forget')
-})
 
 var _ = require('lodash');
 var nodemailer = require("nodemailer");
 var buf = crypto.randomBytes(8);
 
+router.get('/', checkNotLogin, function (req, res, next) {
+    res.render('forget')
+})
 
 // 开启一个 SMTP 连接池
 var smtpTransport = nodemailer.createTransport({
