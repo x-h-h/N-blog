@@ -43,6 +43,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
         req.flash('error', e.message)
         return res.redirect('back')
     }
+    var link = 'http://localhost:3000/change'+buf
 
     UserModel.getUserByName(email)
         .then(function (user) {
@@ -54,13 +55,15 @@ router.post('/', checkNotLogin, function (req, res, next) {
                 from: 'myblog <236718094@qq.com>',
                 to: email,
                 subject: '找回密码',
-                text: buffer,
+                //html: '请点击 <a href="' + link + '">此处</a> 激活。'
+                text: '验证码'+buffer
             };
             smtpTransport.sendMail(defaultMail,(error,info) =>{
                 if(error){
                     console.log(error);
                 }
             })
+            req.flash('success', '已发送验证码')
             try {
                 if (verify != buffer) {
                     throw new Error('验证码错误')
