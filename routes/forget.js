@@ -92,7 +92,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
             // 跳转到主页
             req.flash('success', '验证码正确')
            // throw new Error('已发送，请返回首页')*/
-            res.redirect('/post')
+            res.redirect('/posts')
         })
         .catch(next)
     
