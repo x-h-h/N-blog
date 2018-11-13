@@ -3,6 +3,7 @@ const router = express.Router()
 const crypto = require('crypto')
 
 const UserModel = require('../models/users')
+const Random = require('../models/random')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
 
@@ -31,7 +32,7 @@ var smtpTransport = nodemailer.createTransport({
 // POST /signin 用户登录
 router.post('/', checkNotLogin, function (req, res, next) {
     const email = req.fields.email
-    const verify = req.fields.verify
+    //const verify = req.fields.verify
     const buffer = buf.toString('hex')
 
     // 校验参数
@@ -43,28 +44,44 @@ router.post('/', checkNotLogin, function (req, res, next) {
         req.flash('error', e.message)
         return res.redirect('back')
     }
-    var link = 'http://localhost:3000/change'+buf
+    var link = 'http://localhost:3000/change/'+buffer
+    let ran = {
+        email: email,
+        random: buffer
+    }
+    req.session.ran = ran
 
+    
     UserModel.getUserByName(email)
         .then(function (user) {
             if (!user) {
                 req.flash('error', '用户不存在')
                 return res.redirect('back')
             }
+            if(Random.getRandom){
+                req.flash('error', '发生错误')
+            }
+            //req.flash('success', '已发送验证码')
+            let ran = {
+                email: email,
+                random: buffer
+            }
+            req.session.ran = ran
+            Random.createRandom(ran)
             var defaultMail = {
                 from: 'myblog <236718094@qq.com>',
                 to: email,
                 subject: '找回密码',
-                //html: '请点击 <a href="' + link + '">此处</a> 激活。'
-                text: '验证码'+buffer
+                html: '请点击 <a href="' + link + '">此处</a> 激活。'
+                //text: '验证码'+buffer
             };
-            smtpTransport.sendMail(defaultMail,(error,info) =>{
+           /* smtpTransport.sendMail(defaultMail,(error,info) =>{
                 if(error){
                     console.log(error);
                 }
-            })
+            })*/
             req.flash('success', '已发送验证码')
-            try {
+           /* try {
                 if (verify != buffer) {
                     throw new Error('验证码错误')
                 }
@@ -74,8 +91,8 @@ router.post('/', checkNotLogin, function (req, res, next) {
             }
             // 跳转到主页
             req.flash('success', '验证码正确')
-           // throw new Error('已发送，请返回首页')
-            res.redirect('/change')
+           // throw new Error('已发送，请返回首页')*/
+            res.redirect('/post')
         })
         .catch(next)
     

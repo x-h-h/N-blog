@@ -5,22 +5,39 @@ const express = require('express')
 const router = express.Router()
 
 const UserModel = require('../models/users')
+const Random = require('../models/random')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
-router.get('/', checkNotLogin, function (req, res, next) {
+global.userid;
+router.param(function (param, option) {
+    return function (req, res, next, val) {
+        //global.userid = 'abc'
+        if (val == req.session.ran.random) {
+            next();
+        }
+        else {
+            res.sendStatus(403);
+        }
+    }
+});
+
+router.param('id', global.userid);
+
+router.get('/:id', checkNotLogin, function (req, res, next) {
     res.render('change')
 })
 
-// POST /signup 用户注册
-router.post('/', checkNotLogin, function (req, res, next) {
+
+router.post('/:id', checkNotLogin, function (req, res, next) {
     var password = req.fields.password1
     const repassword = req.fields.repassword1
-    const email = req.fields.email
+    const email = req.session.ran.email
+    const name = req.fields.name
     // 校验参数
 
     try {
-        if (!email) {
-            throw new Error('请填写姓名')
+        if (!UserModel.getUserByName1(name)) {
+            throw new Error('请填写正确的用户名')
         }
         if (password.length < 6) {
             throw new Error('密码至少 6 个字符')
@@ -36,16 +53,18 @@ router.post('/', checkNotLogin, function (req, res, next) {
     UserModel.update(email,password)
     .then(function (result) {
         // 写入 flash
-        req.flash('success', '注册成功')
+        req.flash('success', '修改成功')
         // 跳转到首页
         res.redirect('/posts')
+        Random.delRandom(email)
+        req.session.ran = null
     })
     .catch(function (e) {
         req.flash('error', 'e.message')
         next(e)
     })
 
-    // 校验参数
+    //Random.delRandom(email)
 })
 
 module.exports = router
