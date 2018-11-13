@@ -32,13 +32,9 @@ router.post('/:id', checkNotLogin, function (req, res, next) {
     var password = req.fields.password1
     const repassword = req.fields.repassword1
     const email = req.session.ran.email
-    const name = req.fields.name
     // 校验参数
 
     try {
-        if (!UserModel.getUserByName1(name)) {
-            throw new Error('请填写正确的用户名')
-        }
         if (password.length < 6) {
             throw new Error('密码至少 6 个字符')
         }

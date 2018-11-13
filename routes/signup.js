@@ -82,7 +82,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
       fs.unlink(req.files.avatar.path)
       // 用户名被占用则跳回注册页，而不是错误页
       if (e.message.match('duplicate key')) {
-        req.flash('error', '用户名已被占用')
+        req.flash('error', '邮箱已被占用')
         return res.redirect('/signup')
       }
       next(e)

@@ -34,7 +34,9 @@ router.post('/', checkNotLogin, function (req, res, next) {
     const email = req.fields.email
     //const verify = req.fields.verify
     const buffer = buf.toString('hex')
-
+    if (Random.getRandom(email)) {
+        Random.delRandom(email)
+    }
     // 校验参数
     try {
         if (!email.length) {
@@ -58,8 +60,8 @@ router.post('/', checkNotLogin, function (req, res, next) {
                 req.flash('error', '用户不存在')
                 return res.redirect('back')
             }
-            if(Random.getRandom){
-                req.flash('error', '发生错误')
+            if(Random.getRandom(email)){
+                req.flash('success', '已发送验证邮件')
             }
             //req.flash('success', '已发送验证码')
             let ran = {
@@ -72,26 +74,14 @@ router.post('/', checkNotLogin, function (req, res, next) {
                 from: 'myblog <236718094@qq.com>',
                 to: email,
                 subject: '找回密码',
-                html: '请点击 <a href="' + link + '">此处</a> 激活。'
+                html: '请点击 <a href="' + link + '">此处</a> 修改密码。'
                 //text: '验证码'+buffer
             };
-           /* smtpTransport.sendMail(defaultMail,(error,info) =>{
+            smtpTransport.sendMail(defaultMail,(error,info) =>{
                 if(error){
                     console.log(error);
-                }
-            })*/
-            req.flash('success', '已发送验证码')
-           /* try {
-                if (verify != buffer) {
-                    throw new Error('验证码错误')
-                }
-            } catch (e) {
-                req.flash('error', e.message)
-                return res.redirect('back')
-            }
-            // 跳转到主页
-            req.flash('success', '验证码正确')
-           // throw new Error('已发送，请返回首页')*/
+                } 
+            })
             res.redirect('/posts')
         })
         .catch(next)

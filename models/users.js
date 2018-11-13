@@ -9,6 +9,7 @@ module.exports = {
   getUserByName1: function getUserByName1(name) {
     return User
       .findOne({ name: name })
+      .addCreatedAt()
       .exec()
   },
 
